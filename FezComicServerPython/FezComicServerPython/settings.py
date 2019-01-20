@@ -25,7 +25,7 @@ SECRET_KEY = 'cao)q+c(5mg*l)vb6&2v4c0bm73)v&j-^oa9&d!!cer01_+y4@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'FezComicServerPython'
 ]
 
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'FezComicServerPython.urls'
@@ -75,7 +77,20 @@ WSGI_APPLICATION = 'FezComicServerPython.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
+import pymysql
+pymysql.install_as_MySQLdb()
+if os.getenv('GAE_APPLICATION', None):
+  DATABASES = {
+  'default': {
+  'ENGINE': 'django.db.backends.mysql',
+  'HOST': '/cloudsql/infra-triumph-229219:europe-west1:iweb-db',
+  'NAME': 'iweb',
+  'USER': 'iweb',
+  'PASSWORD': 'iweb',
+  }
+  }
+else:
+  DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'iweb',
@@ -85,6 +100,8 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
+
 
 
 # Password validation
@@ -124,3 +141,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Agregar al final
+CORS_ORIGIN_ALLOW_ALL = True
+STATIC_ROOT = 'static'

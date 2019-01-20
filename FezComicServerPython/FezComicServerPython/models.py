@@ -8,8 +8,20 @@
 from django.db import models
 
 
+class Comentario(models.Model):
+    id = models.IntegerField(primary_key=True)
+    titulo = models.CharField(max_length=45)
+    mensaje = models.CharField(max_length=400, blank=True, null=True)
+    user = models.ForeignKey('User', models.DO_NOTHING)
+    comic = models.ForeignKey('Comic', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'comentario'
+        unique_together = (('id', 'user', 'comic'),)
+
+
 class Comic(models.Model):
-    #id = models.AutoField(primary_key=true)
     nombre = models.CharField(unique=True, max_length=60)
     isbn = models.CharField(max_length=13, blank=True, null=True)
     foto = models.TextField(blank=True, null=True)
@@ -31,8 +43,18 @@ class ComicHasSerie(models.Model):
         unique_together = (('id_comic', 'id_serie'),)
 
 
+class Like(models.Model):
+    id = models.IntegerField(primary_key=True)
+    user = models.ForeignKey('User', models.DO_NOTHING)
+    comic = models.ForeignKey(Comic, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'like'
+        unique_together = (('id', 'comic', 'user'),)
+
+
 class Rol(models.Model):
-    #id = models.AutoField(primary_key=true)
     nombre = models.CharField(max_length=45)
 
     class Meta:
@@ -41,7 +63,6 @@ class Rol(models.Model):
 
 
 class Serie(models.Model):
-    #id = models.AutoField(primary_key=true)
     nombre = models.CharField(unique=True, max_length=60)
     anotacion_privada = models.CharField(max_length=200, blank=True, null=True)
     genero = models.CharField(max_length=60)
