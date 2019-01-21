@@ -2,8 +2,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from .models import Comic,ComicHasSerie,Serie,User,Rol
 from .serializers import ComicSerializer,ComicHasSerieSerializer,SerieSerializer,UserSerializer,RolSerializer
-from google.oauth2 import id_token
-from google.auth.transport import requests
+
 
 class ComicViewSet(viewsets.ModelViewSet):
   queryset = Comic.objects.all()
