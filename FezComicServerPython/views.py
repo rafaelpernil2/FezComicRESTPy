@@ -15,6 +15,10 @@ class ComicHasSerieViewSet(viewsets.ModelViewSet):
 class SerieViewSet(viewsets.ModelViewSet):
   queryset = Serie.objects.all()
   serializer_class = SerieSerializer
+  def delete(self, request, pk, format=None):
+    serie = self.get_object(pk)
+    serie.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 class RolViewSet(viewsets.ModelViewSet):
   queryset = Rol.objects.all()
