@@ -146,3 +146,12 @@ STATIC_URL = '/static/'
 # Agregar al final
 CORS_ORIGIN_ALLOW_ALL = True
 STATIC_ROOT = 'static'
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
