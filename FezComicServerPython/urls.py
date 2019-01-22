@@ -25,8 +25,9 @@ router.register(r'series',views.SerieViewSet)
 router.register(r'users',views.UserViewSet)
 router.register(r'roles',views.RolViewSet)
 
-
 urlpatterns = [
     path('',include(router.urls)),
-    path('admin/', admin.site.urls)
+    path(r'auth',views.Authentication.as_view()),
+    path('admin/', admin.site.urls),
+    path('',include('social_django.urls', namespace='social')),
 ]
