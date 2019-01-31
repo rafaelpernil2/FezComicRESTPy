@@ -22,15 +22,30 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'cao)q+c(5mg*l)vb6&2v4c0bm73)v&j-^oa9&d!!cer01_+y4@'
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =True
+
+
+
+
 
 ALLOWED_HOSTS = ['*']
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '445106160776-gv1jv4dl5cag08db58cjf2ku93tanc2q.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'y0fQCyRSXsy3iqQHewINj0oZ'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '20997473920-opi6u7sbies9c4eket8tjr767l72j8q5.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'X2dNFEd5BV47I_938gHzteB-'
+SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/oauth2/v3/userinfo',
+'https://www.googleapis.com/auth/userinfo.email',
+'https://www.googleapis.com/auth/userinfo.profile'
+]
 
-CLIENT_ID = '445106160776-gv1jv4dl5cag08db58cjf2ku93tanc2q.apps.googleusercontent.com'
+
+CLIENT_ID = '20997473920-opi6u7sbies9c4eket8tjr767l72j8q5.apps.googleusercontent.com'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_USE_UNIQUE_USER_ID = True
+GOOGLE_OAUTH2_SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 # Application definition
 
@@ -43,11 +58,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'FezComicServerPython',
+    'oauth2_provider',
     'social_django',
+    'rest_framework_social_oauth2',
+    'FezComicServerPython',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,7 +74,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'FezComicServerPython.urls'
@@ -81,6 +99,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'FezComicServerPython.wsgi.application'
 
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['localhost']
+
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/user/error/'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+RAISE_EXCEPTIONS=False
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -91,7 +115,7 @@ if os.getenv('GAE_APPLICATION', None):
   'default': {
   'ENGINE': 'django.db.backends.mysql',
   'HOST': '/cloudsql/infra-triumph-229219:europe-west1:iweb-db',
-  'NAME': 'iweb',
+  'NAME': 'iweb',   
   'USER': 'iweb',
   'PASSWORD': 'iweb',
   }
@@ -163,19 +187,30 @@ CORS_ALLOW_METHODS = (
     'PUT',
 )
 
-SOCIAL_AUTH_AUTHENTICATION_BACKENDS = (
+REST_FRAMEWORK = {
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        
+        # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ),
+}
+
+AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',
     'social_core.backends.google.GoogleOpenId',
     'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.google.GoogleOAuth',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.facebook.FacebookOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    #'FezComicServer.pipeline.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
     'social_core.pipeline.user.get_username',
     'social_core.pipeline.user.create_user',

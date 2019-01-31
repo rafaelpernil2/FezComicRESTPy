@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
 from rest_framework import routers
 from . import views
 
@@ -24,10 +24,15 @@ router.register(r'comichasseries',views.ComicHasSerieViewSet)
 router.register(r'series',views.SerieViewSet)
 router.register(r'users',views.UserViewSet)
 router.register(r'roles',views.RolViewSet)
+router.register(r'likes',views.LikeViewSet)
+router.register(r'comentario',views.ComentarioViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
     path(r'auth',views.Authentication.as_view()),
     path('admin/', admin.site.urls),
-    path('',include('social_django.urls', namespace='social')),
+    re_path('comichasseries/comics/(?P<id_serie>.+)/$',views.GetComicsBySerie.as_view()),
+    #path(r'^auth/', include('rest_framework_social_oauth2.urls')),
+    #re_path(r'^register-by-token/(?P<backend>[^/]+)/$',register_by_access_token),
+    #path('',include('social_django.urls', namespace='social')),
 ]
