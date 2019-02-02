@@ -32,6 +32,7 @@ urlpatterns = [
     path(r'auth',views.Authentication.as_view()),
     path('admin/', admin.site.urls),
     re_path('comichasseries/comics/(?P<id_serie>.+)/$',views.GetComicsBySerie.as_view()),
+    #re_path('comichasseries/comichasserie/(?P<id_comic>.+)/(?P<id_serie>.+)/$',views.GetComicHasSerie.as_view()),
     re_path('comics/comicsbynombre/(?P<nombre>.+)/$',views.GetComicsByNombre.as_view()),
     re_path('users/getuserbytoken/(?P<pk>.+)/$',views.GetUserByToken.as_view()),
 ]

@@ -33,7 +33,7 @@ class Comic(models.Model):
 
 
 class ComicHasSerie(models.Model):
-    id_comic = models.ForeignKey(Comic, models.DO_NOTHING, db_column='id_comic', primary_key=True)
+    id_comic = models.ForeignKey('Comic', models.DO_NOTHING, db_column='id_comic')
     id_serie = models.ForeignKey('Serie', models.DO_NOTHING, db_column='id_serie')
     anotacion_publica = models.CharField(max_length=200, blank=True, null=True)
 
