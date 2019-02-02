@@ -32,7 +32,6 @@ urlpatterns = [
     path(r'auth',views.Authentication.as_view()),
     path('admin/', admin.site.urls),
     re_path('comichasseries/comics/(?P<id_serie>.+)/$',views.GetComicsBySerie.as_view()),
-    #path(r'^auth/', include('rest_framework_social_oauth2.urls')),
-    #re_path(r'^register-by-token/(?P<backend>[^/]+)/$',register_by_access_token),
-    #path('',include('social_django.urls', namespace='social')),
+    re_path('comic/comicsbynombre/(?P<nombre>.+)/$',views.GetComicsByNombre.as_view()),
+    re_path('user/getuserbytoken/(?P<pk>.+)/$',views.GetUserByToken.as_view()),
 ]

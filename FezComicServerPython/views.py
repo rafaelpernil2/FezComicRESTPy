@@ -8,6 +8,22 @@ import urllib.request
 import json
 
 
+class GetUserByToken(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+
+    def get(self, request, pk, format=None):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
+        url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + pk
+        response = urllib.request.urlopen(url).read()
+        user_id = json.loads(response.decode('utf-8'))['sub']
+        serializer = UserSerializer(User.objects.get(pk=user_id))
+        return Response(serializer.data)
+
+
+
 class GetComicsBySerie(generics.ListAPIView):
     serializer_class = ComicSerializer
 
@@ -25,6 +41,16 @@ class GetComicsBySerie(generics.ListAPIView):
         return result
         
 
+class GetComicsByNombre(generics.ListAPIView):
+    serializer_class = ComicSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
+        nombre = self.kwargs['nombre']
+        return Comic.objects.filter(nombre=nombre)
 
 
 class ComicViewSet(viewsets.ModelViewSet):
