@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['*']
 
 
 
-
 CLIENT_ID = '20997473920-opi6u7sbies9c4eket8tjr767l72j8q5.apps.googleusercontent.com'
 
 
@@ -83,7 +82,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'FezComicServerPython.wsgi.application'
-
 
 
 

@@ -8,6 +8,22 @@ import urllib.request
 import json
 
 
+class GetSeriesByComic(generics.ListAPIView):
+    serializer_class = ComicSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
+        comic = self.kwargs['id_comic']
+        series = ComicHasSerie.objects.filter(id_comic=comic).values_list('id_serie', flat=True)
+        series = list(series)
+        result = Serie.objects.filter(pk__in=series)
+        
+        return result
+
+
 class GetUserByToken(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
@@ -35,11 +51,50 @@ class GetComicsBySerie(generics.ListAPIView):
         serie = self.kwargs['id_serie']
         comics = ComicHasSerie.objects.filter(id_serie=serie).values_list('id_comic', flat=True)
         comics = list(comics)
-        print (comics)
         result = Comic.objects.filter(pk__in=comics)
         
         return result
         
+class GetComicHasSerie(APIView):
+    serializer_class = ComicHasSerieSerializer
+
+    def get(self, request, *args, **kwargs):
+        serie = self.kwargs['id_serie']
+        comic = self.kwargs['id_comic']
+        comichasseries = ComicHasSerie.objects.filter(id_serie=serie,id_comic=comic).values_list('id',flat=True)
+        ids = list (comichasseries)
+        result = ComicHasSerie.objects.get(pk = ids[0])
+        serializer  = ComicHasSerieSerializer(result)
+        return Response(serializer.data)
+    
+    def put(self, request,*args, **kwargs):
+        serie = self.kwargs['id_serie']
+        comic = self.kwargs['id_comic']
+        comichasseries = ComicHasSerie.objects.filter(id_serie=serie,id_comic=comic).values_list('id',flat=True)
+        if comichasseries:
+            ids = list (comichasseries)
+            comichasserie = ComicHasSerie.objects.get(pk = ids[0])
+            serializer = ComicHasSerieSerializer(comichasserie, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = ComicHasSerieSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        serie = self.kwargs['id_serie']
+        comic = self.kwargs['id_comic']
+        comichasseries = ComicHasSerie.objects.filter(id_serie=serie,id_comic=comic).values_list('id',flat=True)
+        ids = list (comichasseries)
+        comichasserie = ComicHasSerie.objects.get(pk = ids[0])
+        comichasserie.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class GetComicsByNombre(generics.ListAPIView):
     serializer_class = ComicSerializer
@@ -51,6 +106,29 @@ class GetComicsByNombre(generics.ListAPIView):
         """
         nombre = self.kwargs['nombre']
         return Comic.objects.filter(nombre=nombre)
+
+class GetComentariosByComic(generics.ListAPIView):
+    serializer_class = ComentarioSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
+        comic = self.kwargs['id_comic']
+        return Comentario.objects.filter(comic=comic)
+
+class GetLikesByComic(generics.ListAPIView):
+    serializer_class = LikeSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
+        comic = self.kwargs['id_comic']
+        return Like.objects.filter(comic=comic)
+
 
 
 class ComicViewSet(viewsets.ModelViewSet):
@@ -107,18 +185,32 @@ class ComicHasSerieViewSet(viewsets.ModelViewSet):
     queryset = ComicHasSerie.objects.all()
     serializer_class = ComicHasSerieSerializer
 
-    def put(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        serializer = ComicHasSerieSerializer(obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request,format=None):
+        comichasseries = ComicHasSerie.objects.filter(id_serie=request.data['id_serie'],id_comic=request.data['id_comic']).values_list('id',flat=True)
+        if comichasseries:
+            ids = list (comichasseries)
+            comichasserie = ComicHasSerie.objects.get(pk = ids[0])
+            serializer = ComicHasSerieSerializer(comichasserie, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = ComicHasSerieSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         obj = self.get_object(pk)
         obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+    
 
 
 class SerieViewSet(viewsets.ModelViewSet):

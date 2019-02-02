@@ -9,16 +9,15 @@ from django.db import models
 
 
 class Comentario(models.Model):
-    id = models.IntegerField(primary_key=True)
     titulo = models.CharField(max_length=45)
     mensaje = models.CharField(max_length=400, blank=True, null=True)
-    user = models.ForeignKey('User', models.DO_NOTHING)
-    comic = models.ForeignKey('Comic', models.DO_NOTHING)
+    user = models.ForeignKey('User', models.DO_NOTHING, db_column='user_id')
+    comic = models.ForeignKey('Comic', models.DO_NOTHING, db_column='comic_id')
 
     class Meta:
         managed = False
         db_table = 'comentario'
-        unique_together = (('id', 'user', 'comic'),)
+        #unique_together = (( 'user', 'comic'),)
 
 
 class Comic(models.Model):
@@ -44,14 +43,13 @@ class ComicHasSerie(models.Model):
 
 
 class Like(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('User', models.DO_NOTHING)
-    comic = models.ForeignKey(Comic, models.DO_NOTHING)
+    user = models.ForeignKey('User', models.DO_NOTHING, db_column='user_id')
+    comic = models.ForeignKey('Comic', models.DO_NOTHING, db_column='comic_id')
 
     class Meta:
         managed = False
         db_table = 'like'
-        unique_together = (('id', 'comic', 'user'),)
+        unique_together = (('comic', 'user'),)
 
 
 class Rol(models.Model):
