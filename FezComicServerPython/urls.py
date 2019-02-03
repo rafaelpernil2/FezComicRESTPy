@@ -35,6 +35,7 @@ urlpatterns = [
     re_path('comichasseries/comichasserie/(?P<id_comic>.+)/(?P<id_serie>.+)/$',views.GetComicHasSerie.as_view()),
     re_path('comichasseries/series/(?P<id_comic>.+)/$',views.GetSeriesByComic.as_view()),
     re_path('comics/comicsbynombre/(?P<nombre>.+)/$',views.GetComicsByNombre.as_view()),
+    re_path('comics/(?P<pk>.+)/$',views.DeleteComic.as_view()),
     re_path('likes/likesbycomic/(?P<id_comic>.+)/$',views.GetLikesByComic.as_view()),
     re_path('likes/likesbycomic/count/(?P<id_comic>.+)$',views.LikesCountByComic.as_view()),
      re_path('likes/likebyuserandcomic/(?P<id_user>.+)/(?P<id_comic>.+)/$',views.GetLikeByUserAndComic.as_view()),
