@@ -137,13 +137,18 @@ class LikesCountByComic(generics.ListAPIView):
         return Response(result)
 
 
-class GetLikeByUserAndComic(generics.ListAPIView):
+class LikeByUserAndComic(generics.ListAPIView):
     serializer_class = LikeSerializer
 
     def get(self,request,*args, **kwargs):
         result = Like.objects.get(comic= self.kwargs['id_comic'], user = self.kwargs['id_user'])
         serializer = LikeSerializer(result)
         return Response(serializer.data)
+
+    def delete(self,request,*args,**kwargs):
+        result = Like.objects.get(comic= self.kwargs['id_comic'], user = self.kwargs['id_user'])
+        result.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)    
 
 
 class ComicViewSet(viewsets.ModelViewSet):
