@@ -24,7 +24,7 @@ SECRET_KEY = 'cao)q+c(5mg*l)vb6&2v4c0bm73)v&j-^oa9&d!!cer01_+y4@'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =True
+DEBUG =False
 
 
 
