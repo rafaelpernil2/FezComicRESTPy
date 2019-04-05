@@ -2,25 +2,45 @@ from rest_framework import viewsets, generics, status
 from rest_framework.parsers import FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Comic, ComicHasSerie, Serie, User, Rol, Comentario,Like
-from .serializers import ComicSerializer, ComicHasSerieSerializer, SerieSerializer, UserSerializer, RolSerializer, AuthenticationSerializer,ComentarioSerializer,LikeSerializer
+from .models import Comic, ComicHasSerie, Serie, User, Rol, Comentario, Like
+from .serializers import ComicSerializer, ComicHasSerieSerializer, SerieSerializer, UserSerializer, RolSerializer, AuthenticationSerializer, ComentarioSerializer, LikeSerializer
 import urllib.request
 import json
 
+
+class SerieViewSet(viewsets.ModelViewSet):
+    queryset = Serie.objects.all()
+    serializer_class = SerieSerializer
+
+class RolViewSet(viewsets.ModelViewSet):
+    queryset = Rol.objects.all()
+    serializer_class = RolSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class ComicViewSet(viewsets.ModelViewSet):
+    queryset = Comic.objects.all()
+    serializer_class = ComicSerializer
+
+class ComentarioViewSet(viewsets.ModelViewSet):
+    queryset = Comentario.objects.all()
+    serializer_class = ComentarioSerializer
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
 
 class GetSeriesByComic(generics.ListAPIView):
     serializer_class = ComicSerializer
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
         comic = self.kwargs['id_comic']
         series = ComicHasSerie.objects.filter(id_comic=comic).values_list('id_serie', flat=True)
         series = list(series)
         result = Serie.objects.filter(pk__in=series)
-        
+
         return result
 
 
@@ -28,10 +48,6 @@ class GetUserByToken(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
     def get(self, request, pk, format=None):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
         url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + pk
         response = urllib.request.urlopen(url).read()
         user_id = json.loads(response.decode('utf-8'))['sub']
@@ -44,17 +60,13 @@ class GetComicsBySerie(generics.ListAPIView):
     serializer_class = ComicSerializer
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
         serie = self.kwargs['id_serie']
         comics = ComicHasSerie.objects.filter(id_serie=serie).values_list('id_comic', flat=True)
         comics = list(comics)
         result = Comic.objects.filter(pk__in=comics)
-        
+
         return result
-        
+
 class GetComicHasSerie(APIView):
     serializer_class = ComicHasSerieSerializer
 
@@ -66,7 +78,7 @@ class GetComicHasSerie(APIView):
         result = ComicHasSerie.objects.get(pk = ids[0])
         serializer  = ComicHasSerieSerializer(result)
         return Response(serializer.data)
-    
+
     def put(self, request,*args, **kwargs):
         serie = self.kwargs['id_serie']
         comic = self.kwargs['id_comic']
@@ -100,10 +112,6 @@ class GetComicsByNombre(generics.ListAPIView):
     serializer_class = ComicSerializer
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
         nombre = self.kwargs['nombre']
         return Comic.objects.filter(nombre=nombre)
 
@@ -111,10 +119,6 @@ class GetComentariosByComic(generics.ListAPIView):
     serializer_class = ComentarioSerializer
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
         comic = self.kwargs['id_comic']
         return Comentario.objects.filter(comic=comic)
 
@@ -122,10 +126,6 @@ class GetLikesByComic(generics.ListAPIView):
     serializer_class = LikeSerializer
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
         comic = self.kwargs['id_comic']
         return Like.objects.filter(comic=comic)
 
@@ -135,7 +135,6 @@ class LikesCountByComic(generics.ListAPIView):
     def get(self,request,*args, **kwargs):
         result = Like.objects.filter(comic= self.kwargs['id_comic']).count()
         return Response(result)
-
 
 class LikeByUserAndComic(generics.ListAPIView):
     serializer_class = LikeSerializer
@@ -148,65 +147,8 @@ class LikeByUserAndComic(generics.ListAPIView):
     def delete(self,request,*args,**kwargs):
         result = Like.objects.get(comic= self.kwargs['id_comic'], user = self.kwargs['id_user'])
         result.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)    
-
-
-class ComicViewSet(viewsets.ModelViewSet):
-    queryset = Comic.objects.all()
-    serializer_class = ComicSerializer
-    def put(self, request, pk, format=None):
-        comic = self.get_object(pk)
-        serializer = ComicSerializer(comic, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class DeleteComic(generics.DestroyAPIView):
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class ComentarioViewSet(viewsets.ModelViewSet):
-    queryset = Comentario.objects.all()
-    serializer_class = ComentarioSerializer
-    def put(self, request, pk, format=None):
-        comentario = self.get_object(pk)
-        serializer = ComentarioSerializer(comentario, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-class LikeViewSet(viewsets.ModelViewSet):
-    queryset = Like.objects.all()
-    serializer_class = LikeSerializer
-
-    def put(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        serializer = LikeSerializer(obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ComicHasSerieViewSet(viewsets.ModelViewSet):
     queryset = ComicHasSerie.objects.all()
@@ -229,69 +171,6 @@ class ComicHasSerieViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
-
-    
-
-
-class SerieViewSet(viewsets.ModelViewSet):
-    queryset = Serie.objects.all()
-    serializer_class = SerieSerializer
-
-    def put(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        serializer = SerieSerializer(obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class RolViewSet(viewsets.ModelViewSet):
-    queryset = Rol.objects.all()
-    serializer_class = RolSerializer
-
-    def put(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        serializer = RolSerializer(obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def put(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        serializer = UserSerializer(obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        obj = self.get_object(pk)
-        obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class Authentication(generics.CreateAPIView):
@@ -300,15 +179,13 @@ class Authentication(generics.CreateAPIView):
 
     def post(self, request, format=None):
         data= request.data
-        
+
         token = data['idtoken']
         url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token
         response = urllib.request.urlopen(url).read()
         user_id = json.loads(response.decode('utf-8'))['sub']
         user_name = json.loads(response.decode('utf-8'))['name']
 
-        
-        
         if user_id:
             try:
                 User.objects.get(pk=user_id)
@@ -322,8 +199,8 @@ class Authentication(generics.CreateAPIView):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
                 else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(userserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        
+

@@ -18,7 +18,7 @@ from django.urls import path, re_path, include
 from rest_framework import routers
 from . import views
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter(trailing_slash=False)
 router.register(r'comics',views.ComicViewSet)
 router.register(r'comichasseries',views.ComicHasSerieViewSet)
 router.register(r'series',views.SerieViewSet)
@@ -27,18 +27,18 @@ router.register(r'roles',views.RolViewSet)
 router.register(r'likes',views.LikeViewSet)
 router.register(r'comentarios',views.ComentarioViewSet)
 
+
 urlpatterns = [
     path('',include(router.urls)),
     path(r'auth',views.Authentication.as_view()),
     path('admin/', admin.site.urls),
-    re_path('comichasseries/comics/(?P<id_serie>.+)/$',views.GetComicsBySerie.as_view()),
-    re_path('comichasseries/comichasserie/(?P<id_comic>.+)/(?P<id_serie>.+)/$',views.GetComicHasSerie.as_view()),
-    re_path('comichasseries/series/(?P<id_comic>.+)/$',views.GetSeriesByComic.as_view()),
-    re_path('comics/comicsbynombre/(?P<nombre>.+)/$',views.GetComicsByNombre.as_view()),
-    re_path('comics/(?P<pk>.+)/$',views.DeleteComic.as_view()),
-    re_path('likes/likesbycomic/(?P<id_comic>.+)/$',views.GetLikesByComic.as_view()),
-    re_path('likes/likesbycomic/count/(?P<id_comic>.+)$',views.LikesCountByComic.as_view()),
-    re_path('likes/likebyuserandcomic/(?P<id_user>.+)/(?P<id_comic>.+)/$',views.LikeByUserAndComic.as_view()),
-    re_path('comentarios/comentariosbycomic/(?P<id_comic>.+)/$',views.GetComentariosByComic.as_view()),
-    re_path('users/getuserbytoken/(?P<pk>.+)/$',views.GetUserByToken.as_view()),
+    path('comichasseries/comics/<id_serie>',views.GetComicsBySerie.as_view()),
+    path('comichasseries/comichasserie/<id_comic>/<id_serie>',views.GetComicHasSerie.as_view()),
+    path('comichasseries/series/<id_comic>',views.GetSeriesByComic.as_view()),
+    path('comics/comicsbynombre/<nombre>',views.GetComicsByNombre.as_view()),
+    path('likes/likesbycomic/<id_comic>',views.GetLikesByComic.as_view()),
+    path('likes/likesbycomic/count/<id_comic>',views.LikesCountByComic.as_view()),
+    path('likes/likebyuserandcomic/<id_user>/<id_comic>',views.LikeByUserAndComic.as_view()),
+    path('comentarios/comentariosbycomic/<id_comic>',views.GetComentariosByComic.as_view()),
+    path('users/getuserbytoken/<pk>',views.GetUserByToken.as_view()),
 ]

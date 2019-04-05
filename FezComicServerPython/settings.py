@@ -24,18 +24,13 @@ SECRET_KEY = 'cao)q+c(5mg*l)vb6&2v4c0bm73)v&j-^oa9&d!!cer01_+y4@'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =False
-
-
-
+DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
 
 
-
 CLIENT_ID = '20997473920-opi6u7sbies9c4eket8tjr767l72j8q5.apps.googleusercontent.com'
-
 
 
 # Application definition
@@ -57,11 +52,13 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'unslashed.middleware.RemoveSlashMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'FezComicServerPython.urls'
 
@@ -84,35 +81,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'FezComicServerPython.wsgi.application'
 
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-import pymysql
-pymysql.install_as_MySQLdb()
-if os.getenv('GAE_APPLICATION', None):
-  DATABASES = {
-  'default': {
-  'ENGINE': 'django.db.backends.mysql',
-  'HOST': '/cloudsql/infra-triumph-229219:europe-west1:iweb-db',
-  'NAME': 'iweb',   
-  'USER': 'iweb',
-  'PASSWORD': 'iweb',
-  }
-  }
-else:
-  DATABASES = {
+DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'iweb',
-        'USER': 'iweb',
-        'PASSWORD': 'iweb',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
 
 
 # Password validation
@@ -168,8 +145,9 @@ CORS_ALLOW_METHODS = (
 )
 
 
-
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+APPEND_SLASH = False
+REMOVE_SLASH = False
