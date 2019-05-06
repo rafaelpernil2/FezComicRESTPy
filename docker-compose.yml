@@ -3,6 +3,7 @@ version: '3'
 services:
   db:
     image: mysql:5.7
+    command: --max-allowed-packet=256M
     restart: always
     environment:
       MYSQL_DATABASE: 'iweb'
