@@ -24,7 +24,7 @@ SECRET_KEY = 'cao)q+c(5mg*l)vb6&2v4c0bm73)v&j-^oa9&d!!cer01_+y4@'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
@@ -100,7 +100,7 @@ else:
             'NAME': 'iweb',
             'USER': 'iweb',
             'PASSWORD': 'iweb',
-            'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+            'HOST': 'db',   # Or an IP Address that your DB is hosted on
             'PORT': '3306',
         }
     }
