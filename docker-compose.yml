@@ -18,7 +18,7 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   web:
     build: .
-    command: ["./wait-for-it.sh", "db:3306", "--", "python", "manage.py","runserver","0.0.0.0:8000"]
+    command: ["./wait-for-it.sh", "-t", "120","db:3306", "--", "python", "manage.py","runserver","0.0.0.0:8000"]
     container_name: FezComicRESTPy-Service
     volumes:
        - .:/FezComicRESTPy-Service
