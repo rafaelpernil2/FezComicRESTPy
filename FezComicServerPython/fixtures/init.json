@@ -1,0 +1,16 @@
+[
+    {
+        "model": "FezComicServerPython.Rol",
+        "pk": 1,
+        "fields": {
+            "nombre": "Admin"
+        }
+    },
+    {
+        "model": "FezComicServerPython.Rol",
+        "pk": 2,
+        "fields": {
+            "nombre": "Usuario"
+        }
+    }
+]

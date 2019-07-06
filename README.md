@@ -58,7 +58,10 @@ Run the container. If you chose **MySQL** this command also generates the requir
 ```
 $ docker-compose up
 ```
-
+Also, if you want to build, run and leave it as a background process, run the following command
+```
+$ docker-compose up --build --detach
+```
 ## Contributing
 There is no plan regarding contributions in this project
 ## Credits
@@ -66,7 +69,7 @@ This web application has been developed by:
 
 **Rafael Pernil Bronchalo** - *Software Architect and Developer* 
 
-* [github/rafaelpernil](https://github.com/rafaelpernil2)
+* [github/rafaelpernil2](https://github.com/rafaelpernil2)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
