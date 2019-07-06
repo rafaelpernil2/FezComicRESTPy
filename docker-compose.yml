@@ -5,6 +5,8 @@ services:
     image: mysql:5.7
     command: --max-allowed-packet=256M
     restart: always
+    environment:
+      MYSQL_DATABASE: 'iweb'
     env_file:
       - .env
     ports:
@@ -17,8 +19,6 @@ services:
     build: .
     command: ["./wait-for-it.sh", "-t", "120","db:3306", "--", "python", "manage.py","runserver","0.0.0.0:8000"]
     container_name: FezComicRESTPy-Service
-    env_file:
-      - .env
     volumes:
        - .:/FezComicRESTPy-Service
     ports:

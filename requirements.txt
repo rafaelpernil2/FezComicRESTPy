@@ -1,4 +1,5 @@
 Django==2.2.3
 djangorestframework == 3.9.3
 django-cors-headers
+python-dotenv
 mysqlclient==1.4.2
