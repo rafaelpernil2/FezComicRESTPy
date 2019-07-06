@@ -99,7 +99,7 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'iweb',
             'USER': 'iweb',
-            'PASSWORD': 'iweb',
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
             'HOST': 'db',   # Or an IP Address that your DB is hosted on
             'PORT': '3306',
         }
