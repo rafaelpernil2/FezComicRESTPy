@@ -34,7 +34,7 @@ $ pip install -r requirements.txt
 If you want to use SQLite, change ``managed = False`` to ``managed = True`` in **models.py** .
 
 
-Or if you prefer to use MySQL, run **init.sql** script on your MySQL database and then create a file named ``.env`` with your database configuration:
+Or if you prefer to use MySQL, run [**init.sql**](init.sql) script on your MySQL database and then create a file named ``.env`` with your database configuration:
 ``` properties
 MYSQL_HOST=localhost
 MYSQL_PORT=3306
