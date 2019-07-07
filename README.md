@@ -31,11 +31,9 @@ Download all dependencies
 ``` shell
 $ pip install -r requirements.txt
 ```
-If you want to use SQLite, change ``managed = False`` to ``managed = True`` in **models.py** and then launch the following commands
-``` shell
-$ python manage.py makemigrations FezComicServerPython
-$ python manage.py migrate
-```
+If you want to use SQLite, change ``managed = False`` to ``managed = True`` in **models.py** .
+
+
 Or if you prefer to use MySQL, run **init.sql** script on your MySQL database and then create a file named ``.env`` with your database configuration:
 ``` properties
 MYSQL_HOST=localhost
@@ -53,6 +51,11 @@ This file is used by [**theskumar/python_dotenv**](https://github.com/theskumar/
 - Do not rename ``MYSQL_USER``, ``MYSQL_ROOT_PASSWORD`` and ``MYSQL_PASSWORD`` if you are using Docker. Those names are reserved by MySQL Docker image.
 
 
+Then launch the following commands
+``` shell
+$ python manage.py makemigrations FezComicServerPython
+$ python manage.py migrate
+```
 
 **Steps using Docker:**
 
