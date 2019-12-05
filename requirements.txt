@@ -3,3 +3,4 @@ djangorestframework >= 3.10.2
 django-cors-headers
 python-dotenv
 mysqlclient==1.4.3
+djangorestframework-camel-case
